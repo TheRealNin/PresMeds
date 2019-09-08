@@ -11,8 +11,16 @@ function Player:SendKeyEvent(key, down)
 	local oldReturn = oldSendKeyEvent(self, key, down)
 	
 	if not oldReturn and self:isa("Marine") then
+		local ChatEnabled = ChatUI_EnteringChatMessage()
+		if Shine and not ChatEnabled then
+			local Enabled, Chatbox = Shine:IsExtensionEnabled( "chatbox" )
+			local ChatboxEnabled = Enabled and Chatbox.Visible
+			ChatEnabled = ChatboxEnabled
+		end
 		
-		if not ChatUI_EnteringChatMessage() and not MainMenu_GetIsOpened() and bucket:GetNumberOfTokens() > 0 then
+		if not ChatEnabled and
+			not MainMenu_GetIsOpened() and
+			bucket:GetNumberOfTokens() > 0 then
 			
 			if GetIsBinding(key, "RequestHealth") then
                 Client.SendNetworkMessage("RequestTech", {techId = kTechId.MedPack}, true)
